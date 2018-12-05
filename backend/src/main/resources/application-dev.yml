@@ -1,0 +1,57 @@
+server:
+  port: 8888
+  photosavepath: D:\onuo\Images\
+  vediosavepath: D:\longfeng\Vedios\
+
+# 文件上传下载目录
+file:
+  # 在生产环境配置文件中，修改为你喜欢的路径
+  realpath: D:/imgTest
+
+
+spring:
+  # redis
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    pool:
+      max-wait: -1
+      max-active: 8
+      max-idle: 8
+      min-idle: 0
+    timeout: 0
+  http:
+    multipart:
+      max-file-size: 10000MB
+      max-request-size: 10000MB
+    maxTotal: 100                     # 最大连接数
+    defaultMaxPerRoute: 20           # 并发数
+    connectTimeout: 1000             # 创建连接的最长时间
+    connectionRequestTimeout: 500   # 从连接池中获取到连接的最长时间
+    socketTimeout: 1000               # 数据传输的最长时间
+    staleConnectionCheckEnabled: true # 提交请求当前测试连接是否可用
+  #映射路径
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: file:D://rent_car/
+# debug
+logging:
+  level:
+    com.nepu: debug
+  path: logs/
+  file: admin.log
+# jwt
+jwt:
+  expiration-time: 86400 #  过期时间1天
+  header: Authorization
+  token-prefix: Bearer
+  private-key: private-key.pem
+  public-key: public-key.pem
+  authorities-key: auth
+# cache
+cache:
+  expiration: 60 # 过期时间60秒
+

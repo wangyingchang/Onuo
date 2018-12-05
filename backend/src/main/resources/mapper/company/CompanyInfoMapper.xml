@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.company.dao.CompanyInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.company.model.CompanyInfo">
+    <id column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="company_address" jdbcType="VARCHAR" property="companyAddress" />
+    <result column="company_desc" jdbcType="VARCHAR" property="companyDesc" />
+    <result column="company_phone" jdbcType="VARCHAR" property="companyPhone" />
+    <result column="company_longitude" jdbcType="VARCHAR" property="companyLongitude"/>
+    <result column="company_laittude" jdbcType="VARCHAR" property="companyLaittude" />
+    <result column="company_grade" jdbcType="REAL" property="companyGrade" />
+    <result column="company_creat_time" jdbcType="TIMESTAMP" property="companyCreatTime" />
+    <result column="company_update_time" jdbcType="TIMESTAMP" property="companyUpdateTime" />
+    <result column="company_regist_money" jdbcType="INTEGER" property="companyRegistMoney" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="company_reponsibility_id" jdbcType="VARCHAR" property="companyReponsibilityId" />
+    <result column="company_area_id" jdbcType="VARCHAR" property="companyAreaId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <collection property="sysArea" column="car_id"  ofType="cn.onuo.backend.sys.model.SysArea">
+      <id column="area_id" jdbcType="VARCHAR" property="areaId" />
+      <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+      <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    </collection>
+  </resultMap>
+  <resultMap id="CompanyWithImg" type="cn.onuo.backend.company.model.CompanyInfo"
+             extends="BaseResultMap">
+    <!--<collection property="imagePathList" javaType="list" column="company_id" select="getCompanyImg"/>-->
+    <collection property="judgeList" column="company_id" javaType="list" select="getCompanyJudge"/>
+
+  </resultMap>
+
+  <!-- 查询公司图片路径 -->
+  <select id="getCompanyImg" resultType="java.lang.String" parameterType="java.lang.String">
+    select img_path
+    from general_image
+    where img_association_id=#{companyId}
+  </select>
+
+  <!-- 查询公司评论信息 -->
+  <select id="getCompanyJudge" resultMap="cn.onuo.backend.general.dao.GeneralJudgeInfoMapper.BaseResultMap" parameterType="java.lang.String">
+    select * from general_judge_info where car_or_company_id = #{companyId}
+  </select>
+
+  <!-- 根据公司区域检索 -->
+  <select id="getCompanyByAreaId" resultMap="CompanyWithImg">
+    select *
+    from company_info
+    where company_area_id like "%"#{companyAreaId}"%"
+    order by company_grade desc
+  </select>
+
+  <!-- 根据公司名称检索 -->
+  <select id="getCompanyByName" resultMap="CompanyWithImg" >
+    select *
+    from company_info
+    where company_name like "%"#{companyName}"%"
+    order by company_grade desc
+  </select>
+
+  <!-- 根据公司星级评价检索 -->
+  <select id="getCompanyByGrade" resultMap="CompanyWithImg" parameterType="java.lang.Float">
+    select * from company_info where company_grade = #{companyGrade} order by company_grade desc
+  </select>
+
+  <!--&lt;!&ndash; 公司信息更新 &ndash;&gt;-->
+  <!--<update id="updateCompanyInfo"-->
+  <!-- 根据公司名查询公司信息 -->
+  <select id="queryCompanyByName" resultMap="BaseResultMap">
+    select *
+    from company_info c
+    where c.company_name like '%' #{companyName} '%'
+  </select>
+
+  <!-- 根据城市区域Id查询公司信息 -->
+  <select id="queryCompanyByAreaId" resultMap="CompanyWithImg">
+    select *
+    from company_info
+    where company_area_id=#{areaId}
+    order by company_grade desc
+  </select>
+
+  <!--根据区域名查询公司信息-->
+  <select id="getCompanyByAreaName" resultMap="CompanyWithImg">
+    select *
+    from company_info
+    where company_area_id=
+    (select area_id
+    from sys_area
+    where name=#{areaName})
+  </select>
+
+  <!--根据公司Id查询评价表的评分 -->
+  <select id="queryJudgeScoreByCompanyId" resultType="double">
+    select judge_score
+    from general_judge_info
+    where car_or_company_id=#{companyId}
+  </select>
+
+  <!-- 通过城市名查询城市区域id -->
+  <select id="queryAreaIdByName" resultType="string">
+    select area_id
+    from sys_area
+    where name=#{areaName}
+  </select>
+
+  <!-- 根据公司Id查询出所有图片路径 -->
+  <select id="queryImgByCompanyId" resultType="string">
+    select img_path
+    from general_image
+    where img_association_id=#{companyId}
+  </select>
+
+  <!--查询公司法人信息-->
+  <select id="getCompanyResponsibleInfo" resultMap="cn.onuo.backend.general.dao.GeneralCardInfoMapper.BaseResultMap">
+    select *
+    from general_card_info
+    where id=#{companyReponsibilityId}
+  </select>
+
+  <!--根据公司名称和公司区域名 模糊查询并分页-->
+  <select id="queryCompanyByNameAndCity" resultMap="CompanyWithImg">
+    select *
+    from company_info
+    where status=1
+    <if test="city!=null">
+      and company_area_id in(
+      select area_id
+      from sys_area
+      where parent_id=
+      (select area_id
+      from sys_area
+      where name like "%"#{city}"%"
+      )
+      )
+    </if>
+    <if test="companyName!=null">
+      and company_name like "%"#{companyName}"%"
+    </if>
+    order by company_grade desc
+  </select>
+
+  <!--查询城市中所有公司-->
+  <select id="queryCompanyByCity" resultMap="CompanyWithImg">
+select *
+from company_info ci join sys_area sa on ci.company_area_id=sa.area_id
+where ci.company_area_id in(
+ select area_id
+ from sys_area  sa
+  where sa.parent_id=(
+    select area_id
+    from  sys_area
+    where name like "%"#{city}"%"
+	)
+)
+or ci.company_area_id in(
+select area_id
+from sys_area
+where name like "%"#{city}"%"
+)
+order by ci.company_grade desc
+  </select>
+
+
+</mapper>

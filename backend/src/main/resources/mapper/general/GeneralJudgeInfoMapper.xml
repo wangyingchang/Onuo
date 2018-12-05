@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.general.dao.GeneralJudgeInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.general.model.GeneralJudgeInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="judge_id" jdbcType="VARCHAR" property="judgeId" />
+    <result column="judge_conent" jdbcType="VARCHAR" property="judgeConent" />
+    <result column="judge_score" jdbcType="REAL" property="judgeScore" />
+    <result column="judge_time" jdbcType="TIMESTAMP" property="judgeTime" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="car_or_company_id" jdbcType="VARCHAR" property="carOrCompanyId" />
+    <result column="use_id" jdbcType="VARCHAR" property="useId" />
+
+    <collection property="user" column="id"  ofType="cn.onuo.backend.sys.model.User">
+      <id column="id" jdbcType="VARCHAR" property="id" />
+      <result column="email" jdbcType="VARCHAR" property="email" />
+      <result column="username" jdbcType="VARCHAR" property="username" />
+      <result column="password" jdbcType="VARCHAR" property="password" />
+      <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+      <result column="resume" jdbcType="VARCHAR" property="resume" />
+      <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+      <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    </collection>
+  </resultMap>
+
+  <select id="selectJudgeScoreByUserId" resultType="float">
+    select judge_score from general_judge_info where use_id=#{useId}
+  </select>
+  <select id="selectDetailedAssessmentByCarIdOrCompanyId" resultMap="BaseResultMap">
+    select * from general_judge_info where car_or_company_id=#{carOrCompanyId}
+  </select>
+
+  <select id="selectJudgeInfoByOrderId" resultMap="BaseResultMap">
+    select judge_conent,judge_score from general_judge_info where order_id=#{orderId}
+  </select>
+
+  <!--查询公司所有评价信息(分页)-->
+  <select id="queryCompanyJudgeByCompanyId" resultMap="BaseResultMap">
+    select *
+    from general_judge_info ggi join user u on ggi.use_id=u.id
+    where ggi.car_or_company_id=#{id}
+    order by ggi.judge_score desc
+  </select>
+
+  <!-- 查询车辆所有评价信息 -->
+  <select id="queryCarJudgeByCarId" resultMap="BaseResultMap">
+    select *
+    from general_judge_info gi join user u on gi.use_id=u.id
+    where gi.car_or_company_id=#{carOrCompanyId}
+    order by gi.judge_score
+  </select>
+
+  <!--查询订单评价-->
+  <select id="queryOrderJudgeById" resultMap="BaseResultMap">
+      select * from general_judge_info where order_id=#{orderId}
+    </select>
+
+  <!--添加订单评价-->
+  <insert id="addJudge">
+    insert into general_judge_info(judge_id,judge_conent,judge_score,judge_time,order_id,car_or_company_id,use_id)
+    values(#{judgeId},#{judgeConent},#{judgeScore},#{judgeTime},
+    #{orderId},#{carOrCompanyId},#{useId})
+  </insert>
+
+</mapper>

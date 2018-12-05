@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.order.dao.OrderInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.order.model.OrderInfo">
+    <id column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="car_id" jdbcType="VARCHAR" property="carId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+    <result column="car_licence_id" jdbcType="VARCHAR" property="carLicenceId" />
+    <result column="car_judge_id" jdbcType="VARCHAR" property="carJudgeId" />
+    <result column="order_begin_time" jdbcType="TIMESTAMP" property="orderBeginTime" />
+    <result column="order_end_time" jdbcType="TIMESTAMP" property="orderEndTime" />
+    <result column="total_money" jdbcType="REAL" property="totalMoney" />
+    <result column="rent_days" jdbcType="INTEGER" property="rentDays" />
+    <result column="car_activity_id" jdbcType="VARCHAR" property="carActivityId" />
+    <result column="evaluate_info" jdbcType="VARCHAR" property="evaluateInfo" />
+    <collection property="carInfo" column="car_id"  ofType="cn.onuo.backend.car.model.CarInfo">
+      <id column="car_id" jdbcType="VARCHAR" property="carId" />
+      <result column="company_area" jdbcType="VARCHAR" property="companyArea" />
+      <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+      <result column="car_name" jdbcType="VARCHAR" property="carName" />
+      <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+      <result column="car_seat" jdbcType="INTEGER" property="carSeat" />
+      <result column="car_year" jdbcType="INTEGER" property="carYear" />
+      <result column="car_windon" jdbcType="INTEGER" property="carWindon" />
+      <result column="car_power" jdbcType="VARCHAR" property="carPower" />
+      <result column="air_bag" jdbcType="INTEGER" property="airBag" />
+      <result column="car_price" jdbcType="DOUBLE" property="carPrice" />
+      <result column="car_num" jdbcType="VARCHAR" property="carNum" />
+      <result column="car_rent_short" jdbcType="INTEGER" property="carRentShort" />
+      <result column="car_rent_long" jdbcType="INTEGER" property="carRentLong" />
+      <result column="car_rent_comp" jdbcType="INTEGER" property="carRentComp" />
+      <result column="car_transmission" jdbcType="VARCHAR" property="carTransmission" />
+      <result column="car_rent_count" jdbcType="INTEGER" property="carRentCount" />
+      <result column="car_color" jdbcType="VARCHAR" property="carColor" />
+      <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+      <result column="car_quality" jdbcType="INTEGER" property="carQuality" />
+      <result column="car_displacement" jdbcType="INTEGER" property="carDisplacement" />
+      <result column="car_gps" jdbcType="INTEGER" property="carGps" />
+      <result column="status" jdbcType="INTEGER" property="status" />
+      <result column="car_type" jdbcType="VARCHAR" property="carType" />
+      <result column="car_maintain" jdbcType="VARCHAR" property="carMaintain" />
+      <result column="insurance_id" jdbcType="VARCHAR" property="insuranceId" />
+    </collection>
+    <collection property="generalImage" column="car_id" ofType="cn.onuo.backend.general.model.GeneralImage">
+      <id column="img_id" jdbcType="VARCHAR" property="imgId" />
+      <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+      <result column="img_association_id" jdbcType="VARCHAR" property="imgAssociationId" />
+      <result column="img_type" jdbcType="VARCHAR" property="imgType" />
+      <result column="img_status" jdbcType="TINYINT" property="imgStatus" />
+      <result column="img_create_time" jdbcType="TIMESTAMP" property="imgCreateTime" />
+      <result column="img_update_time" jdbcType="TIMESTAMP" property="imgUpdateTime" />
+      <result column="img_sort_num" jdbcType="INTEGER" property="imgSortNum" />
+    </collection>
+  </resultMap>
+
+  <!-- 添加订单 -->
+  <insert id="addOrderInfo" parameterType="cn.onuo.backend.order.model.OrderInfo">
+    insert into order_info values (#{orderId},#{carId},#{userId},#{cardId},#{carLicenceId},
+    #{carJudgeId},#{orderBeginTime},#{orderEndTime},#{totalMoney},#{rentDays},#{carActivityId},
+    #{evaluateInfo})
+  </insert>
+
+  <!-- 修改车辆状态-->
+  <update id="updateCarStatus">
+    update car_info
+    set status=#{status}
+    where car_id=#{carId}
+  </update>
+
+  <!-- 查询指定用户的订单 -->
+  <select id="queryOrderByUserId" resultMap="BaseResultMap">
+    select * from order_info where user_id=#{userId}
+  </select>
+
+  <!--根据公司Id查询出所有车辆Id-->
+  <select id="queryCardIdByCompanyId" resultType="java.lang.String">
+    select car_id from car_info where company_id=#{companyId}
+  </select>
+
+  <!-- 根据车辆Id查询订单 -->
+  <select id="queryOrderByCarId" parameterType="list" resultMap="BaseResultMap">
+    select *
+    from order_info
+    where car_id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <!-- 根据cardId查看订单信息-->
+  <select id="selectOrderInfoByCardId" resultMap="BaseResultMap">
+    select * from order_info where card_id=#{cardId}
+  </select>
+
+  <!-- 根据cardId查询身份证表 -->
+  <select id="queryCardByCardId" resultType="boolean">
+    select * from general_card_info where card_id=#{cardId}
+  </select>
+
+  <!--更新身份证信息 -->
+  <update id="updateCardByCardId">
+    update general_card_info
+    set card_name=#{cardName},card_gender=#{cardGender},
+    card_address=#{cardAddress},birthday=#{birthday},address_now=#{addressNow},status=#{status}
+    where card_id=#{cardId}
+  </update>
+
+  <!--多条件查询订单信息-->
+  <select id="queryOrder" resultMap="BaseResultMap">
+  select *
+  from order_info oi join car_info ci on oi.car_id=ci.car_id
+  join general_image gi on ci.car_id=gi.img_association_id
+  where gi.img_sort_num=1
+  <if test="userId !='' and userId!=null">
+    and oi.user_id=#{userId}
+  </if>
+  <if test="status !='' and status!=null">
+    and oi.evaluate_info=#{status}
+  </if>
+    order by oi.order_begin_time desc
+  </select>
+
+  <!-- 查询车辆订单开始时间和结束时间 -->
+  <select id="queryOrderTime" resultMap="BaseResultMap">
+  select *
+  from order_info o join car_info c on o.car_id = c.car_id
+  where o.car_id=#{carId} and o.evaluate_info=#{evaluateInfo}
+  </select>
+</mapper>

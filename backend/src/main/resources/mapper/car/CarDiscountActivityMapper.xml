@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.car.dao.CarDiscountActivityMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.car.model.CarDiscountActivity">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="car_id" jdbcType="VARCHAR" property="carId" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="discount_desc" jdbcType="VARCHAR" property="discountDesc" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="rent_days" jdbcType="INTEGER" property="rentDays" />
+    <collection property="carBrand" ofType="cn.onuo.backend.car.model.CarBrand">
+      <id column="brand_id" jdbcType="VARCHAR" property="brandId" />
+      <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+      <result column="brand_sort_num" jdbcType="TINYINT" property="brandSortNum" />
+      <result column="brand_desc" jdbcType="VARCHAR" property="brandDesc" />
+      <result column="first_alphbat" jdbcType="VARCHAR" property="firstAlphbat" />
+    </collection>
+    <collection property="generalJudgeInfo" ofType="cn.onuo.backend.general.model.GeneralJudgeInfo">
+      <id column="judge_id" jdbcType="VARCHAR" property="judgeId" />
+      <result column="judge_conent" jdbcType="VARCHAR" property="judgeConent" />
+      <result column="judge_score" jdbcType="REAL" property="judgeScore" />
+      <result column="judge_time" jdbcType="TIMESTAMP" property="judgeTime" />
+      <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+      <result column="car_or_company_id" jdbcType="VARCHAR" property="carOrCompanyId" />
+      <result column="use_id" jdbcType="VARCHAR" property="useId" />
+    </collection>
+    <collection property="carInfo" ofType="cn.onuo.backend.car.model.CarInfo">
+      <id column="car_id" jdbcType="VARCHAR" property="carId" />
+      <result column="company_area" jdbcType="VARCHAR" property="companyArea" />
+      <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+      <result column="car_name" jdbcType="VARCHAR" property="carName" />
+      <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+      <result column="car_seat" jdbcType="INTEGER" property="carSeat" />
+      <result column="car_year" jdbcType="INTEGER" property="carYear" />
+      <result column="car_windon" jdbcType="INTEGER" property="carWindon" />
+      <result column="car_power" jdbcType="VARCHAR" property="carPower" />
+      <result column="air_bag" jdbcType="INTEGER" property="airBag" />
+      <result column="car_price" jdbcType="DOUBLE" property="carPrice" />
+      <result column="car_num" jdbcType="VARCHAR" property="carNum" />
+      <result column="car_rent_short" jdbcType="INTEGER" property="carRentShort" />
+      <result column="car_rent_long" jdbcType="INTEGER" property="carRentLong" />
+      <result column="car_rent_comp" jdbcType="INTEGER" property="carRentComp" />
+      <result column="car_transmission" jdbcType="VARCHAR" property="carTransmission" />
+      <result column="car_rent_count" jdbcType="INTEGER" property="carRentCount" />
+      <result column="car_color" jdbcType="VARCHAR" property="carColor" />
+      <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+      <result column="car_quality" jdbcType="INTEGER" property="carQuality" />
+      <result column="car_displacement" jdbcType="INTEGER" property="carDisplacement" />
+      <result column="car_gps" jdbcType="INTEGER" property="carGps" />
+      <result column="status" jdbcType="INTEGER" property="status" />
+      <result column="car_type" jdbcType="VARCHAR" property="carType" />
+      <result column="car_maintain" jdbcType="VARCHAR" property="carMaintain" />
+      <result column="insurance_id" jdbcType="VARCHAR" property="insuranceId" />
+    </collection>
+
+    <collection property="generalPackageActivity" ofType="cn.onuo.backend.general.model.GeneralPackageActivity">
+      <id column="package_id" jdbcType="VARCHAR" property="packageId" />
+      <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+      <result column="package_desc" jdbcType="VARCHAR" property="packageDesc" />
+      <result column="package_day" jdbcType="INTEGER" property="packageDay" />
+    </collection>
+
+    <collection property="generalImage" ofType="cn.onuo.backend.general.model.GeneralImage">
+      <id column="img_id" jdbcType="VARCHAR" property="imgId" />
+      <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+      <result column="img_association_id" jdbcType="VARCHAR" property="imgAssociationId" />
+      <result column="img_type" jdbcType="VARCHAR" property="imgType" />
+      <result column="img_status" jdbcType="TINYINT" property="imgStatus" />
+      <result column="img_create_time" jdbcType="TIMESTAMP" property="imgCreateTime" />
+      <result column="img_update_time" jdbcType="TIMESTAMP" property="imgUpdateTime" />
+      <result column="img_sort_num" jdbcType="INTEGER" property="imgSortNum" />
+    </collection>
+    <collection property="generalPackageCar" ofType="cn.onuo.backend.general.model.GeneralPackageCar">
+      <id column="id" jdbcType="VARCHAR" property="id" />
+
+      <result column="package_id" jdbcType="VARCHAR" property="packageId" />
+      <result column="package_price" jdbcType="INTEGER" property="packagePrice" />
+    </collection>
+  </resultMap>
+
+
+  <!--查询出长期租赁的车辆信息，需要查询出车辆星级评价-->
+  <select id="recommendLongActivityCar" resultMap="BaseResultMap">
+    SELECT c.company_area,c.car_name,c.car_seat,c.car_year,
+    c.car_windon,c.car_power,c.air_bag,c.car_rent_short,
+    c.car_rent_long,c.car_rent_comp,c.car_transmission,
+    c.car_rent_count,c.car_displacement,c.car_gps,c.status,c.car_type,
+    cb.brand_name,cb.brand_desc,
+    gda.discount_desc,gda.begin_time,gda.end_time,gda.price,gda.rent_days
+    FROM car_discount_activity gda
+    JOIN car_info c ON gda.car_id = c.car_id
+    JOIN car_brand cb ON cb.brand_id=c.brand_id
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    WHERE gda.rent_days &gt;= 30 AND c.status=1
+    limit 8
+  </select>
+
+
+  <!--查询出具有优惠活动的车辆，需要查询出车辆星级评价-->
+  <select id="allActivityCar" resultMap="BaseResultMap">
+    SELECT * FROM car_discount_activity gda
+    JOIN car_info c ON gda.car_id = c.car_id
+    JOIN car_brand cb ON cb.brand_id=c.brand_id
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    WHERE c.status=1
+    limit 8
+  </select>
+
+  <!--查询出具有优惠套餐的车辆，需要查询出车辆星级评价-->
+
+  <select id="discountPackage" resultMap="BaseResultMap">
+    SELECT * FROM general_package_car gpc
+    JOIN car_info c ON gpc.car_id = c.car_id
+    JOIN general_package_activity gpa ON gpc.package_id=gpa.package_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    WHERE c.status=1
+    limit 8
+  </select>
+
+
+  <select id="allActivityCarWithTime" resultMap="BaseResultMap">
+  SELECT * FROM car_discount_activity gda
+  JOIN car_info c ON gda.car_id = c.car_id
+  JOIN car_brand cb ON cb.brand_id=c.brand_id
+  JOIN general_image gi ON c.car_id=gi.img_association_id
+  WHERE c.status=1 AND  #{beginTime}&gt;=gda.begin_time AND #{endTime}&lt;=gda.end_time
+
+  </select>
+
+</mapper>

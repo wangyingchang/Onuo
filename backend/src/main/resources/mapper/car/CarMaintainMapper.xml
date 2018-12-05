@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.car.dao.CarMaintainMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.car.model.CarMaintain">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="maintain_id" jdbcType="VARCHAR" property="maintainId" />
+    <result column="latest_miantian_time" jdbcType="TIMESTAMP" property="latestMiantianTime" />
+    <result column="next_maintain_time" jdbcType="TIMESTAMP" property="nextMaintainTime" />
+    <result column="maintain_desc" jdbcType="VARCHAR" property="maintainDesc" />
+  </resultMap>
+</mapper>

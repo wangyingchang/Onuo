@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.general.dao.GeneralImageMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.general.model.GeneralImage">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="img_id" jdbcType="VARCHAR" property="imgId" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="img_association_id" jdbcType="VARCHAR" property="imgAssociationId" />
+    <result column="img_type" jdbcType="VARCHAR" property="imgType" />
+    <result column="img_status" jdbcType="TINYINT" property="imgStatus" />
+    <result column="img_create_time" jdbcType="TIMESTAMP" property="imgCreateTime" />
+    <result column="img_update_time" jdbcType="TIMESTAMP" property="imgUpdateTime" />
+    <result column="img_sort_num" jdbcType="INTEGER" property="imgSortNum" />
+  </resultMap>
+</mapper>

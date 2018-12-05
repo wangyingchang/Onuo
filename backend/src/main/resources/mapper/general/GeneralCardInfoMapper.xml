@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.general.dao.GeneralCardInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.general.model.GeneralCardInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+    <result column="card_name" jdbcType="VARCHAR" property="cardName" />
+    <result column="card_gender" jdbcType="TINYINT" property="cardGender" />
+    <result column="card_address" jdbcType="VARCHAR" property="cardAddress" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="address_now" jdbcType="VARCHAR" property="addressNow" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+
+  <select id="selectCardInfoByCardId"  resultMap="BaseResultMap">
+    select * from general_card_info where card_id=#{cardId}
+  </select>
+
+  <select id="selectCardInfo"  resultMap="BaseResultMap">
+    select * from general_card_info
+    where CONCAT_WS("",card_name,card_id,card_address,address_now)
+    like '%${cardInfo}%'
+    and status=1
+  </select>
+</mapper>

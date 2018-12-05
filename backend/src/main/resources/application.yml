@@ -1,0 +1,68 @@
+# https://docs.spring.io/spring-boot/docs/1.5.12.RELEASE/reference/htmlsingle/#boot-features-external-config-multi-profile-yaml
+spring:
+  profiles:
+    active: dev
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      url: jdbc:mysql://47.94.254.108:3306/rent_car
+      #47.94.254.108:3306/lf-psb
+      username: root
+      password: 123456
+      initial-size: 5  #10
+      max-active: 100
+      min-idle: 5
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      stat-view-servlet:
+        url-pattern: /druid/*
+        enabled: true
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+  mvc:
+    throw-exception-if-no-handler-found: true # 404 交给异常处理器处理
+  resources:
+    add-mappings: true
+    
+# mybatis
+mybatis:
+  type-aliases-package: cn.onuo.**.model
+  mapper-locations: classpath:mapper/**/*.xml
+# mapper
+## mappers 多个接口时逗号隔开
+mapper:
+  mappers: cn.onuo.backend.common.mapper.MyMapper
+  not-empty: false
+  identity: MYSQL
+# pagehelper
+pagehelper:
+  page-size-zero: true
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+# 接口文档开关
+swagger:
+  enable: true
+jasypt:
+  encryptor:
+    password: zoctan
+# 以文件方式记录日志
+#logging.file=oj.log
+# 设置目录
+#logging.path=/var/log
+
+

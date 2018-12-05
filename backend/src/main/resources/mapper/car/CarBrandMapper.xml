@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.car.dao.CarBrandMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.car.model.CarBrand">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="brand_sort_num" jdbcType="TINYINT" property="brandSortNum" />
+    <result column="brand_desc" jdbcType="VARCHAR" property="brandDesc" />
+    <result column="first_alphbat" jdbcType="VARCHAR" property="firstAlphbat" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.car.dao.CarDiverInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.car.model.CarDiverInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="diver_id" jdbcType="VARCHAR" property="diverId" />
+    <result column="diver_name" jdbcType="VARCHAR" property="diverName" />
+    <result column="diver_gender" jdbcType="TINYINT" property="diverGender" />
+    <result column="diver_start_time" jdbcType="TIMESTAMP" property="diverStartTime" />
+    <result column="diver_end_time" jdbcType="TIMESTAMP" property="diverEndTime" />
+    <result column="diver_country" jdbcType="VARCHAR" property="diverCountry" />
+    <result column="diver_address" jdbcType="VARCHAR" property="diverAddress" />
+    <result column="diver_birthday" jdbcType="TIMESTAMP" property="diverBirthday" />
+    <result column="diver_type" jdbcType="VARCHAR" property="diverType" />
+    <result column="first_licence_time" jdbcType="TIMESTAMP" property="firstLicenceTime" />
+  </resultMap>
+</mapper>

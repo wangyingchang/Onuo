@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.onuo.backend.car.dao.CarInfoMapper">
+
+  <resultMap id="BaseResultMap" type="cn.onuo.backend.car.model.CarInfo">
+    <id column="car_id" jdbcType="VARCHAR" property="carId" />
+    <result column="company_area" jdbcType="VARCHAR" property="companyArea" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="car_name" jdbcType="VARCHAR" property="carName" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="car_seat" jdbcType="INTEGER" property="carSeat" />
+    <result column="car_year" jdbcType="INTEGER" property="carYear" />
+    <result column="car_windon" jdbcType="INTEGER" property="carWindon" />
+    <result column="car_power" jdbcType="VARCHAR" property="carPower" />
+    <result column="air_bag" jdbcType="INTEGER" property="airBag" />
+    <result column="car_price" jdbcType="DOUBLE" property="carPrice" />
+    <result column="car_num" jdbcType="VARCHAR" property="carNum" />
+    <result column="car_rent_short" jdbcType="INTEGER" property="carRentShort" />
+    <result column="car_rent_long" jdbcType="INTEGER" property="carRentLong" />
+    <result column="car_rent_comp" jdbcType="INTEGER" property="carRentComp" />
+    <result column="car_transmission" jdbcType="VARCHAR" property="carTransmission" />
+    <result column="car_rent_count" jdbcType="INTEGER" property="carRentCount" />
+    <result column="car_color" jdbcType="VARCHAR" property="carColor" />
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+    <result column="car_quality" jdbcType="INTEGER" property="carQuality" />
+    <result column="car_displacement" jdbcType="INTEGER" property="carDisplacement" />
+    <result column="car_gps" jdbcType="INTEGER" property="carGps" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="car_type" jdbcType="VARCHAR" property="carType" />
+    <result column="car_maintain" jdbcType="VARCHAR" property="carMaintain" />
+    <result column="insurance_id" jdbcType="VARCHAR" property="insuranceId" />
+    <collection property="carBrand" column="car_id"  ofType="cn.onuo.backend.car.model.CarBrand">
+      <id column="brand_id" jdbcType="VARCHAR" property="brandId" />
+      <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+      <result column="brand_sort_num" jdbcType="TINYINT" property="brandSortNum" />
+      <result column="brand_desc" jdbcType="VARCHAR" property="brandDesc" />
+      <result column="first_alphbat" jdbcType="VARCHAR" property="firstAlphbat" />
+    </collection>
+    <collection property="generalJudgeInfo" column="car_id"  ofType="cn.onuo.backend.general.model.GeneralJudgeInfo">
+      <id column="judge_id" jdbcType="VARCHAR" property="judgeId" />
+      <result column="judge_conent" jdbcType="VARCHAR" property="judgeConent" />
+      <result column="judge_score" jdbcType="REAL" property="judgeScore" />
+      <result column="judge_time" jdbcType="TIMESTAMP" property="judgeTime" />
+      <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+      <result column="car_or_company_id" jdbcType="VARCHAR" property="carOrCompanyId" />
+      <result column="use_id" jdbcType="VARCHAR" property="useId" />
+    </collection>
+    <collection property="generalImage" column="car_id" ofType="cn.onuo.backend.general.model.GeneralImage">
+      <id column="img_id" jdbcType="VARCHAR" property="imgId" />
+      <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+      <result column="img_association_id" jdbcType="VARCHAR" property="imgAssociationId" />
+      <result column="img_type" jdbcType="VARCHAR" property="imgType" />
+      <result column="img_status" jdbcType="TINYINT" property="imgStatus" />
+      <result column="img_create_time" jdbcType="TIMESTAMP" property="imgCreateTime" />
+      <result column="img_update_time" jdbcType="TIMESTAMP" property="imgUpdateTime" />
+      <result column="img_sort_num" jdbcType="INTEGER" property="imgSortNum" />
+    </collection>
+  </resultMap>
+
+  <!-- 查询出所有的车辆类型 -->
+  <select id="queryCarType" resultType="java.lang.String">
+    select distinct car_type
+    from car_info
+  </select>
+
+  <!-- 查询出所有的车辆品牌 -->
+  <select id="queryCarBrand" resultType="java.lang.String">
+    select distinct brand_name
+    from car_brand
+  </select>
+
+  <!-- 检索所有车辆 -->
+  <select id="queryCarByAll" resultMap="BaseResultMap">
+    select *
+    from car_info ci  left join car_brand cb on ci.brand_id=cb.brand_id
+    left join general_judge_info gji on ci.car_id=gji.car_or_company_id
+    left join general_image gi on ci.car_id=gi.img_association_id
+    where ci.status=1
+  </select>
+
+  <!-- 根据车型模糊检索车辆 -->
+  <select id="queryCarByType" resultMap="BaseResultMap">
+    select *
+    from car_info ci left join car_brand cb on ci.brand_id=cb.brand_id
+    left join general_judge_info gji on ci.car_id=gji.car_or_company_id
+    left join general_image gi on ci.car_id=gi.img_association_id
+    where ci.car_type like '%' #{carType} '%' and ci.status=1
+  </select>
+
+  <!-- 根据车购价检索车辆 -->
+  <select id="queryCarByPrice" resultMap="BaseResultMap">
+    select *
+    from car_info ci left join car_brand cb on ci.brand_id=cb.brand_id
+    left join general_judge_info gji on ci.car_id=gji.car_or_company_id
+    left join general_image gi on ci.car_id=gi.img_association_id
+    where ci.car_price between #{startCarPrice} and #{endCarPrice} and ci.status=1
+  </select>
+
+  <!-- 根据租价检索车辆 -->
+  <select id="queryCarByRent" resultMap="BaseResultMap">
+    select *
+    from car_info ci left join car_brand cb on ci.brand_id=cb.brand_id
+    left join general_judge_info gji on ci.car_id=gji.car_or_company_id
+    left join general_image gi on ci.car_id=gi.img_association_id
+    where ci.car_rent_short between #{startRent} and #{endRent} and ci.status=1
+  </select>
+
+  <!-- 根据车辆品牌名模糊检索车辆 -->
+  <select id="queryCarByBrand" resultMap="BaseResultMap">
+    select *
+    from car_info ci left join car_brand cb on ci.brand_id=cb.brand_id
+    left join general_judge_info gji on ci.car_id=gji.car_or_company_id
+    left join general_image gi on ci.car_id=gi.img_association_id
+    where cb.brand_name like '%' #{brandName} '%' and ci.status=1
+  </select>
+
+  <!-- 根据车辆座位数检索车辆 -->
+  <select id="queryCarBySeat" resultMap="BaseResultMap">
+    select *
+    from car_info ci left join car_brand cb on ci.brand_id=cb.brand_id
+    left join general_judge_info gji on ci.car_id=gji.car_or_company_id
+    left join general_image gi on ci.car_id=gi.img_association_id
+    where ci.car_seat between #{startCarSeat} and #{endCarSeat} and ci.status=1
+  </select>
+
+
+
+  <select id="queryHotCar" resultMap="BaseResultMap" >
+    SELECT DISTINCT c.company_area,c.car_name,c.car_seat,c.car_year,c.car_id,
+    c.car_windon,c.car_power,c.air_bag,c.car_rent_short,
+    c.car_rent_long,c.car_rent_comp,c.car_transmission,
+    c.car_rent_count,c.car_displacement,c.car_gps,c.status,c.car_type,
+    b.brand_name,b.brand_desc,gi.img_path
+    FROM car_info c join car_brand b on c.brand_id= b.brand_id
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    WHERE c.status=1
+    GROUP BY c.car_id
+	ORDER BY c.car_rent_count desc
+    limit 6;
+
+
+
+  </select>
+  <!--查看车辆详情-->
+  <select id="detailsCar" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_brand cb JOIN car_info c ON cb.brand_id=c.brand_id
+    JOIN car_insurance_info cii ON c.insurance_id=cii.insurance_id
+    JOIN car_maintain cm ON c.car_maintain=cm.maintain_id
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    WHERE c.status=1
+    limit 8;
+  </select>
+
+
+
+  <resultMap id="GeneralJudgeInfo" type="cn.onuo.backend.general.model.GeneralJudgeInfo">
+    <result column="judge_conent" jdbcType="VARCHAR" property="judgeConent" />
+    <result column="judge_score" jdbcType="REAL" property="judgeScore" />
+    <result column="judge_time" jdbcType="TIMESTAMP" property="judgeTime" />
+    <collection property="user" ofType="cn.onuo.backend.sys.model.User">
+      <id column="id" jdbcType="VARCHAR" property="id" />
+      <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+      <result column="username" jdbcType="VARCHAR" property="username" />
+    </collection>
+  </resultMap>
+
+  <select id="judge" resultMap="GeneralJudgeInfo">
+    SELECT gji.judge_conent,gji.judge_score,gji.judge_time,u.avatar,u.username
+    FROM general_judge_info gji
+    JOIN user u on gji.use_id= u.id
+    WHERE #{carId}=car_or_company_id
+  </select>
+
+
+  <select id="companyAllCar" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c JOIN general_image gi ON c.car_id=gi.img_association_id
+    WHERE #{companyId}=c.company_id
+  </select>
+  <select id="companyCarStatus" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    WHERE #{companyId}=c.company_id and #{status}=c.status
+  </select>
+
+  <select id="companyCarNum" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    WHERE #{companyId}=c.company_id and c.car_num like "%"#{carNum}"%"
+  </select>
+
+  <select id="companyCarBrand" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    WHERE #{companyId}=c.company_id and cb.brand_name like "%"#{carBrand}"%"
+  </select>
+
+  <select id="companyCarType" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    WHERE #{companyId}=c.company_id and c.car_type like "%"#{carType}"%"
+  </select>
+
+  <select id="companyCarYear" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    WHERE #{companyId}=c.company_id and c.car_year=#{carYear}
+  </select>
+
+  <!--根据id查询车辆信息-->
+  <select id="queryCarInfoById" resultMap="BaseResultMap">
+    select *
+    from car_info ci join general_image gi on ci.car_id=gi.img_association_id
+                     join car_brand cb on ci.brand_id=cb.brand_id
+    where ci.car_id=#{id}
+  </select>
+
+
+  <select id="shortRentSort" resultMap="BaseResultMap">
+  SELECT *
+  FROM car_info c
+  JOIN general_image gi ON c.car_id=gi.img_association_id
+  JOIN car_brand cb ON c.brand_id=cb.brand_id
+  where gi.img_sort_num=1
+  ORDER BY c.car_rent_short
+  </select>
+
+  <select id="shortRentSortDesc" resultMap="BaseResultMap">
+  SELECT *
+  FROM car_info c
+  JOIN general_image gi ON c.car_id=gi.img_association_id
+  JOIN car_brand cb ON c.brand_id=cb.brand_id
+  where gi.img_sort_num=1
+  ORDER BY c.car_rent_short DESC
+  </select>
+
+  <select id="longRentSort" resultMap="BaseResultMap">
+  SELECT *
+  FROM car_info c
+  JOIN general_image gi ON c.car_id=gi.img_association_id
+  JOIN car_brand cb ON c.brand_id=cb.brand_id
+  where gi.img_sort_num=1
+  ORDER BY c.car_rent_long
+  </select>
+
+  <select id="longRentSortDesc" resultMap="BaseResultMap">
+  SELECT *
+  FROM car_info c
+  JOIN general_image gi ON c.car_id=gi.img_association_id
+  JOIN car_brand cb ON c.brand_id=cb.brand_id
+  where gi.img_sort_num=1
+  ORDER BY c.car_rent_long DESC
+  </select>
+
+
+  <select id="averageJudge" resultMap="GeneralJudgeInfo">
+  SELECT *
+  FROM general_judge_info gji
+  WHERE car_or_company_id = #{carId}
+
+  </select>
+
+
+
+  <select id="shortCompanyCarRentSort" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    where c.company_id=#{companyId} and gi.img_sort_num=1
+    ORDER BY c.car_rent_short
+  </select>
+
+  <select id="shortCompanyCarRentSortDesc" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    where c.company_id=#{companyId} and gi.img_sort_num=1
+    ORDER BY c.car_rent_short DESC
+  </select>
+
+  <select id="longCompanyCarRentSort" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    where c.company_id#={companyId} and gi.img_sort_num=1
+    ORDER BY c.car_rent_long
+  </select>
+
+  <select id="longCompanyCarRentSortDesc" resultMap="BaseResultMap">
+    SELECT *
+    FROM car_info c
+    JOIN general_image gi ON c.car_id=gi.img_association_id
+    JOIN car_brand cb ON c.brand_id=cb.brand_id
+    where c.company_id=#{companyId} and gi.img_sort_num=1
+    ORDER BY c.car_rent_long DESC
+  </select>
+
+
+
+</mapper>

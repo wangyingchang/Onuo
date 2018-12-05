@@ -1,0 +1,10 @@
+/* 改变主题色变量 */
+$--color-primary: rgb(32,160,255);
+
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+
+.el-tree-node__content {
+    height: auto; // Tree 自动调整高度
+  }
